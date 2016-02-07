@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>BattleShip!</title>
+	<link rel="stylesheet" href="main.css">
+	<script type="text/javascript" src="vendor/angular.min.js"></script>
+	<script type="text/javascript" src="main.js"></script>
+</head>
+<body ng-app="battleShipApp">
+	<div ng-controller="battleController">
+		<div ng-show="isPlayerOnesTurn">
+			<div class="player-title">PLAYER 1</div>
+			<div class="ship-separator">
+				<div class="board-title">Your Ships</div>
+				<table class="player-ships">
+				 	<tr ng-repeat="row in playerOneDefenseBoard">
+					    <td ng-repeat="col in row track by $index">
+					       {{col}}
+					    </td>
+					</tr>
+				</table>
+			</div>
+			<div class="ship-separator">
+				<div class="board-title">Enemy Ships</div>
+				<table class="enemy-ships">
+				 	<tr ng-repeat="row in playerOneAttackBoard">
+					    <td ng-repeat="col in row track by $index" ng-click="addSquareToQueue('one')">
+					    	{{col}}
+					    </td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div ng-hide="isPlayerOnesTurn">
+			<div class="player-title">PLAYER 2</div>
+			<div class="ship-separator">
+				<div class="board-title">Your Ships</div>
+				<table class="player-ships">
+				 	<tr ng-repeat="row in playerTwoDefenseBoard">
+					    <td ng-repeat="col in row track by $index">
+					       {{col}}
+					    </td>
+					</tr>
+				</table>
+			</div>
+			<div class="ship-separator">
+				<div class="board-title">Enemy Ships</div>
+				<table class="enemy-ships">
+				 	<tr ng-repeat="row in playerTwoAttackBoard">
+					    <td ng-repeat="col in row track by $index" ng-click="addSquareToQueue('two')">
+					       {{col}}
+					    </td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="btnSubmitAttack">
+			<button ng-click="initializeBoards()">Reset</button>
+			<button ng-click="submitAttack()">ATTACK!</button>
+		</div>
+		
+	</div>
+	
+</body>
+</html>

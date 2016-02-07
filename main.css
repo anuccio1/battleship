@@ -1,0 +1,43 @@
+table {
+	table-layout: fixed;
+	width:100%;
+}
+table,th,td {
+	border: 1px solid black;
+}
+th,td {
+	text-align: center;
+}
+
+.player-ships {
+	width:70%;
+}
+.player-ships td, .player-ships th {
+	height: 20px;
+}
+.enemy-ships {
+	width:100%;
+}
+.enemy-ships td, .enemy-ships th {
+	height: 40px;
+}
+.ship-separator {
+	display: inline-block;
+	width:45%;
+}
+
+.player-title {
+	text-align: center;
+    font-weight: bold;
+    font-size: 35px;
+    margin-bottom: 20px;
+}
+
+.board-title {
+	font-weight: bold;
+}
+
+#btnSubmitAttack button {
+	height: 100px;
+	width:  100px;
+}
