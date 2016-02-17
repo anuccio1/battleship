@@ -17,7 +17,7 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 		'Patrol Boat': 2
 	}
 
-	var shipObj = {
+	$scope.playerOneShips = {
 		'Aircraft': [],
 		'BattleShip': [],
 		'Submarine': [],
@@ -25,8 +25,13 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 		'Patrol Boat': []
 	};
 
-	$scope.playerOneShips = Object.assign({}, shipObj);
-	$scope.playerTwoShips = Object.assign({}, shipObj);
+	$scope.playerTwoShips = {
+		'Aircraft': [],
+		'BattleShip': [],
+		'Submarine': [],
+		'Destroyer': [],
+		'Patrol Boat': []
+	};
 
 	//selection queue
 	var playerOneQueue = [];
