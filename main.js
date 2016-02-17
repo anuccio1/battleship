@@ -9,20 +9,24 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 	$scope.playerOneAttackBoard = [];
 	$scope.playerTwoAttackBoard = [];
 
-	$scope.playerOneShips = {
+	var shipMap = {
+		'Aircraft': 5,
+		'BattleShip': 4,
+		'Submarine': 3,
+		'Destroyer': 3,
+		'Patrol Boat': 2
+	}
+
+	var shipObj = {
 		'Aircraft': [],
 		'BattleShip': [],
 		'Submarine': [],
 		'Destroyer': [],
 		'Patrol Boat': []
 	};
-	$scope.playerTwoShips = {
-		'Aircraft': [],
-		'BattleShip': [],
-		'Submarine': [],
-		'Destroyer': [],
-		'Patrol Boat': []
-	};
+
+	$scope.playerOneShips = Object.assign({}, shipObj);
+	$scope.playerTwoShips = Object.assign({}, shipObj);
 
 	//selection queue
 	var playerOneQueue = [];
@@ -32,6 +36,25 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 	function BattleSquare(row, col) {
 		this.row = row;
 		this.col = col;
+	}
+
+	//row and col are starting position of ship (top or left most depending on isVertical)
+	function placeShips(isPlayerOne, shipName, isVertical, row, col) {
+		var defenseBoard = isPlayerOne ? $scope.playerOneDefenseBoard : $scope.playerTwoDefenseBoard;
+		var shipsBoard = isPlayerOne ? $scope.playerOneShips : $scope.playerTwoShips;
+		var shipSize = shipMap[shipName];	//get size of ship
+
+		for (var i = 0; i < shipSize; i++) {
+			defenseBoard[row][col] = 'x';
+			var currentSquare = new BattleSquare(row,col);
+			shipsBoard[shipName].push(currentSquare);
+			//this is whether the ship is being placed vertically or horizontally
+			if (isVertical) {
+				row++;
+			} else {
+				col++;
+			}
+		}
 	}
 
 	$scope.initializeBoards = function() {
@@ -49,74 +72,22 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 				$scope.playerTwoAttackBoard[i][j] = '';
 			}
 		}
-		//Place the game pieces
-		var counter = 0;
+
+		//place the ships
+		placeShips(true, 'Aircraft', true, 3, 2);
+		placeShips(false, 'Aircraft', false, 5, 1);
+
+		placeShips(true, 'BattleShip', false, 2, 6);
+		placeShips(false, 'BattleShip', true, 0, 5);
 		
-		//Aircraft Carrier (size 5)
-		while (counter < 5) {
-			$scope.playerOneDefenseBoard[3+counter][2] = 'x';
-			var playerOneSquare = new BattleSquare(3+counter, 2);
-			$scope.playerOneShips['Aircraft'].push(playerOneSquare);	//add to ships object (so we know if one was sunk)
-
-			$scope.playerTwoDefenseBoard[5][1 + counter] = 'x';
-			var playerTwoSquare = new BattleSquare(5, 1 + counter);
-			$scope.playerTwoShips['Aircraft'].push(playerTwoSquare);	//add to ships object (so we know if one was sunk)
-
-			counter++;
-		}
-
-		counter = 0;
-		//BattleShip (size 4)
-		while (counter < 4) {
-			$scope.playerOneDefenseBoard[2][6+counter] = 'x';
-			var playerOneSquare = new BattleSquare(2, 6+counter);
-			$scope.playerOneShips['BattleShip'].push(playerOneSquare);	//add to ships object (so we know if one was sunk)
-
-			$scope.playerTwoDefenseBoard[0 + counter][5] = 'x';
-			var playerTwoSquare = new BattleSquare(0+counter,5);
-			$scope.playerTwoShips['BattleShip'].push(playerTwoSquare);	//add to ships object (so we know if one was sunk)
-
-			counter++;
-		}
-		counter = 0;
-		//Submarine (size 3)
-		while (counter < 3) {
-			$scope.playerOneDefenseBoard[1+counter][4] = 'x';
-			var playerOneSquare = new BattleSquare(1+counter, 4);
-			$scope.playerOneShips['Submarine'].push(playerOneSquare);	//add to ships object (so we know if one was sunk)
-
-			$scope.playerTwoDefenseBoard[1][1+counter] = 'x';
-			var playerTwoSquare = new BattleSquare(1,1+counter);
-			$scope.playerTwoShips['Submarine'].push(playerTwoSquare);	//add to ships object (so we know if one was sunk)
-
-			counter++;
-		}
-		counter = 0;
-		//Destroyer (size 3)
-		while (counter < 3) {
-			$scope.playerOneDefenseBoard[5+counter][8] = 'x';
-			var playerOneSquare = new BattleSquare(5+counter, 8);
-			$scope.playerOneShips['Destroyer'].push(playerOneSquare);	//add to ships object (so we know if one was sunk)
-
-			$scope.playerTwoDefenseBoard[0][7+counter] = 'x';
-			var playerTwoSquare = new BattleSquare(0,7+counter);
-			$scope.playerTwoShips['Destroyer'].push(playerTwoSquare);	//add to ships object (so we know if one was sunk)
-
-			counter++;
-		}
-		counter = 0;
-		//Patrol Boat (size 2)
-		while (counter < 2) {
-			$scope.playerOneDefenseBoard[9][4+counter] = 'x';
-			var playerOneSquare = new BattleSquare(9, 4+counter);
-			$scope.playerOneShips['Patrol Boat'].push(playerOneSquare);	//add to ships object (so we know if one was sunk)
-
-			$scope.playerTwoDefenseBoard[9][2+counter] = 'x';
-			var playerTwoSquare = new BattleSquare(9,2+counter);
-			$scope.playerTwoShips['Patrol Boat'].push(playerTwoSquare);	//add to ships object (so we know if one was sunk)
-
-			counter++;
-		}
+		placeShips(true, 'Submarine', true, 1, 4);
+		placeShips(false, 'Submarine', false, 1, 1);
+		
+		placeShips(true, 'Destroyer', true, 5, 8);
+		placeShips(false, 'Destroyer', false, 0, 7);
+		
+		placeShips(true, 'Patrol Boat', false, 9,4);
+		placeShips(false, 'Patrol Boat', false, 9, 2);
 	};
 
 	//Adds a pending state, before the user accepts the move
