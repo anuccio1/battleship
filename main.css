@@ -8,7 +8,10 @@ table,th,td {
 th,td {
 	text-align: center;
 }
-
+.place-ships {
+	width: 90%;
+	height: 500px;
+}
 .player-ships {
 	width:70%;
 }

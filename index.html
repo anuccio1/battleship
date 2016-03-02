@@ -9,7 +9,39 @@
 </head>
 <body ng-app="battleShipApp">
 	<div ng-controller="battleController">
-		<div ng-show="isPlayerOnesTurn">
+		<div ng-show="isPlayerOnesTurn && isSetupMode">
+			<div class="board-title">Place Your Ships</div>
+			<table class="place-ships">
+			 	<tr ng-repeat="row in playerOneDefenseBoard">
+				    <td ng-repeat="col in row track by $index" ng-click="addSquareToPlacementQueue('one')">
+				       {{col}}
+				    </td>
+				</tr>
+			</table>
+		</div>
+		<div ng-show="!isPlayerOnesTurn && isSetupMode">
+			<div class="board-title">Place Your Ships</div>
+			<table class="place-ships">
+			 	<tr ng-repeat="row in playerTwoDefenseBoard">
+				    <td ng-repeat="col in row track by $index" ng-click="addSquareToPlacementQueue('two')">
+				       {{col}}
+				    </td>
+				</tr>
+			</table>
+		</div>
+		<div class="ship-placement-options">
+			<label>Aircraft</label>
+		    <input type="radio" ng-model="currentShip" value="Aircraft">
+		  	<label>BattleShip</label>
+		    <input type="radio" ng-model="currentShip" value="BattleShip">
+		    <label>Submarine</label>
+		    <input type="radio" ng-model="currentShip" value="Submarine">
+		    <label>Destroyer</label>
+		    <input type="radio" ng-model="currentShip" value="Destroyer">
+		    <label>Patrol Boat</label>
+		    <input type="radio" ng-model="currentShip" value="Patrol Boat">
+		</div>
+		<div ng-show="isPlayerOnesTurn && !isSetupMode">
 			<div class="player-title">PLAYER 1</div>
 			<div class="ship-separator">
 				<div class="board-title">Your Ships</div>
@@ -32,7 +64,7 @@
 				</table>
 			</div>
 		</div>
-		<div ng-hide="isPlayerOnesTurn">
+		<div ng-show="!isPlayerOnesTurn && !isSetupMode">
 			<div class="player-title">PLAYER 2</div>
 			<div class="ship-separator">
 				<div class="board-title">Your Ships</div>
@@ -57,7 +89,8 @@
 		</div>
 		<div id="btnSubmitAttack">
 			<button ng-click="initializeBoards()">Reset</button>
-			<button ng-click="submitAttack()">ATTACK!</button>
+			<button ng-show="isSetupMode"  ng-click="submitShipPlacement()">Submit Ship</button>
+			<button ng-show="!isSetupMode" ng-click="submitAttack()">ATTACK!</button>
 		</div>
 		
 	</div>
