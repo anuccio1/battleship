@@ -29,17 +29,11 @@
 				</tr>
 			</table>
 		</div>
-		<div class="ship-placement-options">
-			<label>Aircraft</label>
-		    <input type="radio" ng-model="currentShip" value="Aircraft">
-		  	<label>BattleShip</label>
-		    <input type="radio" ng-model="currentShip" value="BattleShip">
-		    <label>Submarine</label>
-		    <input type="radio" ng-model="currentShip" value="Submarine">
-		    <label>Destroyer</label>
-		    <input type="radio" ng-model="currentShip" value="Destroyer">
-		    <label>Patrol Boat</label>
-		    <input type="radio" ng-model="currentShip" value="Patrol Boat">
+		<div class="ship-placement-options" ng-show="isSetupMode">
+			<label ng-repeat="ship in allShips">
+				<input type="radio" ng-model="$parent.currentShip" value="{{ship.name}}" name="ships" ng-disabled="!ship.enabled">
+				{{ship.name}}
+			</label>
 		</div>
 		<div ng-show="isPlayerOnesTurn && !isSetupMode">
 			<div class="player-title">PLAYER 1</div>

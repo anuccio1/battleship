@@ -22,6 +22,8 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 		'Patrol Boat': 2
 	}
 
+	$scope.allShips = [];
+
 	$scope.playerOneShips = {
 		'Aircraft': [],
 		'BattleShip': [],
@@ -71,6 +73,17 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 		}
 	}
 
+	function resetAllShipsButtons() {
+		$scope.allShips = [ 
+			{ name: 'Aircraft',enabled: true },
+			{ name: 'BattleShip', enabled: true },
+			{ name: 'Submarine', enabled: true },
+			{ name: 'Destroyer', enabled: true },
+			{ name: 'Patrol Boat', enabled: true }
+		];
+		$scope.currentShip = 'Aircraft';
+	}
+
 	function emptyArray(arr) {
 		while(arr.length > 0) {
 			arr.pop();
@@ -96,17 +109,10 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 		clearArray(playerTwoShipsPlaced);
 		clearArray(playerOneQueue);
 		clearArray(playerTwoQueue);
+
+		resetAllShipsButtons();
 	};
 
-	function shipsBorder (ship1, ship2) {
-		if (ship1.row === ship2.row) {
-			return (ship1.col+1 === ship2.col || ship1.col-1 === ship2.col)
-		} else if (ship1.col === ship2.col) {
-			return (ship1.row+1 === ship2.row || ship1.row-1 === ship2.row);
-		} else {	//ships don't border at all
-			return false;
-		}
-	}
 	//this is when user is placing boats
 	$scope.addSquareToPlacementQueue = function (player) {
 		var row = this.$parent.$index;	//grab index from first ng-repeat
@@ -140,7 +146,6 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 		}
 	};
 
-
 	function shipIsVertical (sq1, sq2) {
 		return sq1.col === sq2.col;
 	}
@@ -162,6 +167,24 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 		}
 	}
 
+	function changeShipSelected() {
+		var firstNonPlacedShip;
+		for (var i=0; i<$scope.allShips.length; i++) {
+			var currShip = $scope.allShips[i];
+			if ($scope.currentShip === currShip.name) {
+				currShip.enabled = false;
+			} else {
+				if (!firstNonPlacedShip) {
+					if (currShip.enabled) {
+						firstNonPlacedShip = currShip.name;		//get the ship to change to in the radio buttons
+					}
+				}
+			}
+		}
+
+		$scope.currentShip = firstNonPlacedShip;
+	}
+
 	//call this after a ship has been placed to check on any state changes i.e. players turn being over, or setup mode being over
 	function shipHasBeenPlaced() {
 		if ($scope.isPlayerOnesTurn) {
@@ -169,12 +192,17 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 				alert("All Ships have been placed");
 				$scope.isPlayerOnesTurn = false;
 				alert("Player Two's Turn");
+				resetAllShipsButtons();
+			} else {
+				changeShipSelected();
 			}
 		} else {
 			if (playerTwoShipsPlaced.length === 5) {
 				alert("All Ships for Player two have been placed.");
 				$scope.isPlayerOnesTurn = true;
 				$scope.isSetupMode = false;	//end the setup mode
+			} else {
+				changeShipSelected();
 			}
 		}
 	}
@@ -237,7 +265,7 @@ battleShipApp.controller('battleController', ['$scope', function ($scope) {
 				clearArray(currPlayerQueue);
 				alert("Your " + $scope.currentShip + " has been placed");
 				shipsPlacedArr.push($scope.currentShip);
-				shipHasBeenPlaced()
+				shipHasBeenPlaced();
 			} else {
 				alert("Ship is Invalid! All Squares must be bordering one another");
 			}
